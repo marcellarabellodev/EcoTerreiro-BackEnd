@@ -1,7 +1,9 @@
 package com.ecoterreiro.ecoterreiro_backend.controller;
 
 import com.ecoterreiro.ecoterreiro_backend.entity.Terreiro;
+import com.ecoterreiro.ecoterreiro_backend.exception.TerreiroNotFoundException;
 import com.ecoterreiro.ecoterreiro_backend.repository.TerreiroRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class TerreiroController {
     // 1. Métdo POST
     // URL: POST http://localhost:8080/api/terreiros
     @PostMapping   // Mapeia requisições POST para este métdo no caminho base (/api/terreiros)
-    public ResponseEntity<Terreiro> createTerreiro(@RequestBody Terreiro terreiro) {
+    public ResponseEntity<Terreiro> createTerreiro(@Valid @RequestBody Terreiro terreiro) {
         Terreiro novoTerreiro = terreiroRepository.save(terreiro);
         return new ResponseEntity<>(novoTerreiro, HttpStatus.CREATED);
     }
@@ -40,21 +42,17 @@ public class TerreiroController {
     // URL: GET http://localhost:8080/api/terreiros/{id} (ex: http://localhost:8080/api/terreiros/1)
     @GetMapping("/{id}")
     public ResponseEntity<Terreiro> getTerreiroById(@PathVariable Long id) {
-        Optional<Terreiro> terreiro = terreiroRepository.findById(id);
-        // Se encontrar o terreiro, retorna 200 OK com o objeto
-        // Se não encontrar, retorna 404 Not Found
-        if (terreiro.isPresent()) {
-            return new ResponseEntity<>(terreiro.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Terreiro terreiro = terreiroRepository.findById(id)
+        // .orElseThrow: Ele tenta obter o objeto dentro do Optional. Se o objeto estiver presente, ele o retorna. Se o Optional estiver vazio, ele lança a exceção que foi especificada
+                .orElseThrow(() -> new TerreiroNotFoundException("Terreiro não encontrado com o ID: " + id));
+        return ResponseEntity.ok(terreiro);
     }
 
     // 4. Métdo PUT (UPDATE)
     // URL: PUT http://localhost:8080/api/terreiros/{id} (ex: http://localhost:8080/api/terreiros/1)
     // Corpo da requisição deve ser um JSON completo do Terreiro com os dados atualizados
     @PutMapping("/{id}")
-    public ResponseEntity<Terreiro> updateTerreiro(@PathVariable Long id, @RequestBody Terreiro terreiroDetails) {
+    public ResponseEntity<Terreiro> updateTerreiro(@PathVariable Long id, @Valid @RequestBody Terreiro terreiroDetails) {
         // Verifica se o terreiro com o ID existe
         Optional<Terreiro> existingTerreiroOptional = terreiroRepository.findById(id);
 
@@ -93,5 +91,36 @@ public class TerreiroController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Retorna 500 em caso de erro
         }
+    }
+
+    // Endpoint para buscar terreiros por nome
+    @GetMapping("/byName")
+    public ResponseEntity<List<Terreiro>> getTerreiroByNomeTerreiro(@RequestParam("nome") String nomeTerreiro) {
+        List<Terreiro> terreiro = terreiroRepository.findByNomeTerreiro(nomeTerreiro);
+        if (terreiro.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(terreiro);
+    }
+
+    // Endpoint para buscar por nome de pai/mãe de santo
+    @GetMapping("/byPaiMaeSanto")
+    public  ResponseEntity<List<Terreiro>> getTerreiroByPaiMaeSanto(@RequestParam("nome") String nomePaiMaeSantoTerreiro) {
+        List<Terreiro> terreiro = terreiroRepository.findByNomePaiMaeSantoTerreiro(nomePaiMaeSantoTerreiro);
+        if (terreiro.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(terreiro);
+    }
+
+    // Endpoint para buscar por um trecho do nome do terreiro
+    // URL: GET http://localhost:8080/api/terreiros/byNamePartial?nome=terro
+    @GetMapping("/byNameParcial")
+    public ResponseEntity<List<Terreiro>> getTerreirosByNomeParcial(@RequestParam("nome") String nomeTerreiro) {
+        List<Terreiro> terreiro = terreiroRepository.findByNomeTerreiroContaining(nomeTerreiro);
+        if (terreiro.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(terreiro);
     }
 }
