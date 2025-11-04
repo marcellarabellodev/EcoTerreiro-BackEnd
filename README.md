@@ -5,6 +5,8 @@
 
 Este repositório contém o código-fonte da API RESTful do projeto EcoTerreiro, desenvolvido em **Java** com o *framework* **Spring Boot**. A API é responsável pela gestão de dados dos Terreiros cadastrados, incluindo informações de contato, práticas e dificuldades.
 
+### 🧪 Testes e Exemplos
+Para exemplos práticos de como interagir com os endpoints (POST, GET, PUT, DELETE, Validação) utilizando o Postman, consulte o arquivo [TESTES.md](./TESTES.md).
 ____________________________
 
 ## 💻 Tecnologias Utilizadas
@@ -18,7 +20,7 @@ ____________________________
 | **Ferramenta de Build** | Maven | Gerenciamento de dependências e construção do projeto. |
 | **Validação** | Bean Validation | Utilizado para validar dados de entrada (JSON) antes de serem enviados ao banco. |
 | **Containerização** | Docker | Utilizado para empacotar e isolar a aplicação e suas dependências, garantindo um ambiente consistente. |
-
+| **Testes de API** | Postman | Ferramenta utilizada para realizar testes manuais nos endpoints da API. |
 ____________________________
 
 ## ⚙️ Endpoints da API
@@ -42,6 +44,40 @@ ____________________________
 A API implementa um **Global Exception Handler** (`@ControllerAdvice`) para garantir que as respostas de erro sejam padronizadas (JSON) e informativas.
 * **404 Not Found:** Retornado quando um ID não existe (`TerreiroNotFoundException`).
 * **400 Bad Request:** Retornado automaticamente em falhas de validação (`@Valid` e `@NotBlank`) nos dados de entrada.
+
+____________________________
+
+## 🚀 Como Rodar a Aplicação Localmente
+
+Siga os passos abaixo para ter uma cópia do projeto rodando na sua máquina.
+
+### Pré-requisitos
+
+* Java Development Kit (JDK) 17 ou superior.
+* Maven.
+* Instância do MySQL (local ou em container) rodando na porta `3306`.
+* **Docker e Docker Compose** (para ambientes em container).
+
+### Configuração
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/orgs/backend-br/repositories](https://github.com/orgs/backend-br/repositories)
+    cd ecoterreiro-backend
+    ```
+
+2.  **Configure o Banco de Dados:**
+    * Crie um banco de dados chamado `ecoterreiro_db` (ou o nome que você usou).
+    * Atualize o arquivo `src/main/resources/application.properties` com suas credenciais do MySQL.
+
+3.  **Inicie a Aplicação:**
+    * Via terminal (sem Docker):
+        ```bash
+        ./mvnw spring-boot:run
+        ```
+    * Ou diretamente pelo IntelliJ IDEA.
+
+A API estará rodando em `http://localhost:8080`.
 
 ____________________________
 
