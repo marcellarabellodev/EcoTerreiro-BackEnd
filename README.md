@@ -5,15 +5,6 @@
 
 Este repositório contém o código-fonte da API RESTful do projeto EcoTerreiro, desenvolvido em **Java** com o *framework* **Spring Boot**. A API é responsável pela gestão de dados dos Terreiros cadastrados, incluindo informações de contato, práticas e dificuldades.
 
-## 🛡️ Tratamento de Erros e QA
-
-A API implementa um **Global Exception Handler** (`@ControllerAdvice`) para garantir que as respostas de erro sejam padronizadas (JSON) e informativas, seguindo o padrão REST:
-
-* **404 Not Found:** Retornado para qualquer recurso não encontrado (IDs ou resultados de busca vazios).
-* **400 Bad Request:** Retornado em falhas de validação nos dados de entrada (`@Valid` e `@NotBlank`).
-
-### 🧪 Documentação de Testes
-Para a documentação completa dos **Casos de Teste (Test Cases)**, incluindo exemplos de requisições no Postman para cada cenário de sucesso e exceção, consulte os arquivos **[TESTES.md](./TESTES.md)** e [Casos-de-teste.xls](./Casos-de-teste.xls).
 ____________________________
 
 ## 💻 Tecnologias Utilizadas
@@ -39,18 +30,24 @@ A base de todos os endpoints é `/api/terreiros`.
 | **POST** | `/api/terreiros` | Cadastra um novo Terreiro. | Corpo JSON do objeto `Terreiro` |
 | **GET** | `/api/terreiros` | Lista todos os Terreiros cadastrados. | - |
 | **GET** | `/api/terreiros/{id}` | Busca um Terreiro específico pelo ID. | `id` (Path Variable) |
-| **GET** | `/api/terreiros/byName` | Busca exata por nome do Terreiro. | `?nome={nome}` (Query Param) |
-| **GET** | `/api/terreiros/byNomeParcial` | Busca parcial por um trecho do nome do Terreiro. | `?nome={trecho}` (Query Param) |
+| **GET** | `/api/terreiros/byName` | Busca exata por nome completo do Terreiro. | `?nome={nome}` (Query Param) |
+| **GET** | `/api/terreiros/byNomeParcial` | Busca por um trecho do nome do Terreiro. | `?nome={trecho}` (Query Param) |
+| **GET** | `/api/terreiros/byPaiMaeSanto` | Busca por nome completo do Pai ou Mãe de Santo. | `?nome={nome}` (Query Param) |
+| **GET** | `/api/terreiros/byPaiMaeSantoParcial` | Busca por um trecho do nome do Pai ou Mãe de Santo. | `?nome={trecho}` (Query Param) |
 | **PUT** | `/api/terreiros/{id}` | Atualiza todos os dados de um Terreiro pelo ID. | `id` (Path Variable) + Corpo JSON |
 | **DELETE** | `/api/terreiros/{id}` | Remove um Terreiro do banco de dados pelo ID. | `id` (Path Variable) |
 
 ____________________________
 
-## 🛡️ Tratamento de Erros e Boas Práticas
+## 🛡️ Tratamento de Erros e QA
 
-A API implementa um **Global Exception Handler** (`@ControllerAdvice`) para garantir que as respostas de erro sejam padronizadas (JSON) e informativas.
-* **404 Not Found:** Retornado quando um ID não existe (`TerreiroNotFoundException`).
-* **400 Bad Request:** Retornado automaticamente em falhas de validação (`@Valid` e `@NotBlank`) nos dados de entrada.
+A API implementa um **Global Exception Handler** (`@ControllerAdvice`) para garantir que as respostas de erro sejam padronizadas (JSON) e informativas, seguindo o padrão REST:
+
+* **404 Not Found:** Retornado para qualquer recurso não encontrado (IDs ou resultados de busca vazios).
+* **400 Bad Request:** Retornado em falhas de validação nos dados de entrada (`@Valid` e `@NotBlank`).
+
+### 🧪 Documentação de Testes
+Para a documentação completa dos **Casos de Teste (Test Cases)**, incluindo exemplos de requisições no Postman para cada cenário de sucesso e exceção, consulte os arquivos **[TESTES.md](./TESTES.md)** e [Casos-de-teste.xls](./Casos-de-teste.xls).
 
 ____________________________
 
