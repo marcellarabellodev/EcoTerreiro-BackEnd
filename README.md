@@ -5,8 +5,15 @@
 
 Este repositório contém o código-fonte da API RESTful do projeto EcoTerreiro, desenvolvido em **Java** com o *framework* **Spring Boot**. A API é responsável pela gestão de dados dos Terreiros cadastrados, incluindo informações de contato, práticas e dificuldades.
 
-### 🧪 Testes e Exemplos
-Para exemplos práticos de como interagir com os endpoints (POST, GET, PUT, DELETE, Validação) utilizando o Postman, consulte o arquivo [TESTES.md](./TESTES.md).
+## 🛡️ Tratamento de Erros e QA
+
+A API implementa um **Global Exception Handler** (`@ControllerAdvice`) para garantir que as respostas de erro sejam padronizadas (JSON) e informativas, seguindo o padrão REST:
+
+* **404 Not Found:** Retornado para qualquer recurso não encontrado (IDs ou resultados de busca vazios).
+* **400 Bad Request:** Retornado em falhas de validação nos dados de entrada (`@Valid` e `@NotBlank`).
+
+### 🧪 Documentação de Testes
+Para a documentação completa dos **Casos de Teste (Test Cases)**, incluindo exemplos de requisições no Postman para cada cenário de sucesso e exceção, consulte os arquivos **[TESTES.md](./TESTES.md)** e [Casos-de-teste.xls](./Casos-de-teste.xls).
 ____________________________
 
 ## 💻 Tecnologias Utilizadas
