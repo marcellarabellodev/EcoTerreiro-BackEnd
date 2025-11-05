@@ -34,7 +34,7 @@ public class Terreiro {
     private Integer anosTerreiro;   // Usamos Integer para permitir valores nulos se necessário
 
     @Column(name = "dificuldade_para_aplicar_terreiro", columnDefinition = "TEXT", nullable = false)    // Usado para mapear String para o tipo TEXT no MySQL para campos longos.
-    @NotBlank(message = "Precisa ser informada a dificuldade do Terreiro.")
+    @NotBlank(message = "Precisa informar a dificuldade do Terreiro.")
     private String dificuldadeParaAplicarTerreiro;
 
     @Column(name = "praticas_que_possui_terreiro", columnDefinition = "TEXT")

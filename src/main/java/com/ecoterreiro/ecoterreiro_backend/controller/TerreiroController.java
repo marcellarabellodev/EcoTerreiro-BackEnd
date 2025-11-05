@@ -61,8 +61,8 @@ public class TerreiroController {
 
             // Atualiza os campos do terreiro existente com os detalhes fornecidos
             // É importante atualizar campo por campo para não sobrescrever com null se um campo não for enviado no JSON
-            // Ou podemos usar BeanUtils.copyProperties(terreiroDetails, existingTerreiro, "id", "dataCadastro")
-            // caso queira um update mais robusto, mas para começar, atualização manual é mais clara.
+            // Ou posso usar BeanUtils.copyProperties(terreiroDetails, existingTerreiro, "id", "dataCadastro")
+            // para um update mais robusto, mas para começar, atualização manual é mais clara.
             existingTerreiro.setNomeTerreiro(terreiroDetails.getNomeTerreiro());
             existingTerreiro.setEndTerreiro(terreiroDetails.getEndTerreiro());
             existingTerreiro.setNomePaiMaeSantoTerreiro(terreiroDetails.getNomePaiMaeSantoTerreiro());
@@ -77,7 +77,8 @@ public class TerreiroController {
             Terreiro updatedTerreiro = terreiroRepository.save(existingTerreiro); // Salva as alterações
             return new ResponseEntity<>(updatedTerreiro, HttpStatus.OK); // Retorna 200 OK
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Retorna 404 Not Found se o ID não existir
+            // Lançar a exceção personalizada, que o RestExceptionHandler irá capturar e formatar
+            throw new TerreiroNotFoundException("Terreiro não encontrado com o ID: " + id);
         }
     }
 
@@ -85,42 +86,66 @@ public class TerreiroController {
     // URL: DELETE http://localhost:8080/api/terreiros/{id} (ex: http://localhost:8080/api/terreiros/1)
     @DeleteMapping("/{id}")
     public ResponseEntity<Terreiro> deleteTerreiro(@PathVariable Long id) {
-        try {
-            terreiroRepository.deleteById(id); // Tenta deletar pelo ID
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Retorna 204 No Content (sucesso sem conteúdo)
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Retorna 500 em caso de erro
+        // Verifica se o Terreiro existe
+        if (!terreiroRepository.existsById(id)) {
+            // Se não existir, lança a exceção que será interceptada e retornará 404
+            throw new TerreiroNotFoundException("Terreiro não encontrado com o ID: " + id);
         }
+        // Se existir, deleta
+        terreiroRepository.deleteById(id);
+        // Retorna 204 No Content (sem corpo) indicando sucesso ao deletar
+        return ResponseEntity.noContent().build();
     }
 
-    // Endpoint para buscar terreiros por nome
+
+    // Endpoint para buscar terreiros por nome COMPLETO do terreiro
+    // URL: GET http://localhost:8080/api/terreiros/byName?nome=Terreiro Pai Benedito
     @GetMapping("/byName")
     public ResponseEntity<List<Terreiro>> getTerreiroByNomeTerreiro(@RequestParam("nome") String nomeTerreiro) {
-        List<Terreiro> terreiro = terreiroRepository.findByNomeTerreiro(nomeTerreiro);
-        if (terreiro.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        List<Terreiro> terreiros = terreiroRepository.findByNomeTerreiro(nomeTerreiro);
+        // Se a lista estiver vazia, lança a exceção
+        if (terreiros.isEmpty()) {
+            // Lançar a exceção personalizada, que o RestExceptionHandler irá formatar
+            throw new TerreiroNotFoundException("Nenhum terreiro encontrado com o nome informado: " + nomeTerreiro);
         }
-        return ResponseEntity.ok(terreiro);
+        return ResponseEntity.ok(terreiros);
     }
 
-    // Endpoint para buscar por nome de pai/mãe de santo
+    // Endpoint para buscar por nome COMPLETO de pai/mãe de santo
+    // URL: GET http://localhost:8080/api/terreiros/byPaiMaeSanto?nome=Mãe Jussara Martins
     @GetMapping("/byPaiMaeSanto")
     public  ResponseEntity<List<Terreiro>> getTerreiroByPaiMaeSanto(@RequestParam("nome") String nomePaiMaeSantoTerreiro) {
-        List<Terreiro> terreiro = terreiroRepository.findByNomePaiMaeSantoTerreiro(nomePaiMaeSantoTerreiro);
-        if (terreiro.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        List<Terreiro> terreiros = terreiroRepository.findByNomePaiMaeSantoTerreiro(nomePaiMaeSantoTerreiro);
+        // Se a lista estiver vazia, lança a exceção
+        if (terreiros.isEmpty()) {
+            // Lançar a exceção personalizada, que o RestExceptionHandler irá formatar
+            throw new TerreiroNotFoundException("Nenhum terreiro encontrado com o nome informado: " + nomePaiMaeSantoTerreiro);
         }
-        return ResponseEntity.ok(terreiro);
+        return ResponseEntity.ok(terreiros);
     }
 
     // Endpoint para buscar por um trecho do nome do terreiro
-    // URL: GET http://localhost:8080/api/terreiros/byNamePartial?nome=terro
+    // URL: GET http://localhost:8080/api/terreiros/byNameParcial?nome=Aruanda (exemplo)
     @GetMapping("/byNameParcial")
     public ResponseEntity<List<Terreiro>> getTerreirosByNomeParcial(@RequestParam("nome") String nomeTerreiro) {
-        List<Terreiro> terreiro = terreiroRepository.findByNomeTerreiroContaining(nomeTerreiro);
-        if (terreiro.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        List<Terreiro> terreiros = terreiroRepository.findByNomeTerreiroContaining(nomeTerreiro);
+        // Se a lista estiver vazia, lança a exceção
+        if (terreiros.isEmpty()) {
+        // Lançar a exceção personalizada, que o RestExceptionHandler irá formatar
+            throw new TerreiroNotFoundException("Nenhum terreiro encontrado com o nome ou trecho inserido: " + nomeTerreiro);
         }
-        return ResponseEntity.ok(terreiro);
+        return ResponseEntity.ok(terreiros);
+    }
+
+    // Endpoint para buscar por um trecho do nome do pai/mãe de santo
+    // URL: GET http://localhost:8080/api/terreiros/byPaiMaeSantoParcial?nome=Rosalina (exemplo)
+    @GetMapping("/byPaiMaeSantoParcial")
+    public ResponseEntity<List<Terreiro>> getTerreirosByPaiMaeSantoParcial(@RequestParam("nome") String nomePaiMaeSantoTerreiro) {
+        List<Terreiro> terreiros = terreiroRepository.findByNomePaiMaeSantoTerreiroContaining(nomePaiMaeSantoTerreiro);
+        if (terreiros.isEmpty()) {
+            // Lançar a exceção personalizada, que o RestExceptionHandler irá formatar
+            throw new TerreiroNotFoundException("Nenhum terreiro encontrado com o nome ou trecho inserido: " + nomePaiMaeSantoTerreiro);
+        }
+        return ResponseEntity.ok(terreiros);
     }
 }

@@ -1,6 +1,7 @@
 package com.ecoterreiro.ecoterreiro_backend.repository;
 
 import com.ecoterreiro.ecoterreiro_backend.entity.Terreiro;     // importando classe Terreiro
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;   // Esta é a interface central do Spring Data JPA.
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +26,6 @@ public interface TerreiroRepository extends JpaRepository<Terreiro, Long> {
 
     // Métdo para buscar por um trecho do nome do terreiro (não precisa ser o nome completo)
     List<Terreiro> findByNomeTerreiroContaining(String nomeTerreiro); //  O Containing faz com que o Spring crie uma query com LIKE %nomeTerreiro%, o que é ótimo para buscas parciais.
+
+    List<Terreiro> findByNomePaiMaeSantoTerreiroContaining(String nomePaiMaeSantoTerreiro);
 }
