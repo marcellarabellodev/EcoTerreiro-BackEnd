@@ -6,6 +6,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity  // Marca esta classe como uma entidade JPA, mapeada para uma tabela do BD
 @Table(name = "terreiros") // Especifica o nome da tabela no BD se for diferente do nome da classe
@@ -48,6 +49,17 @@ public class Terreiro {
 
     @Column(name = "aplicou_alguma_pratica_site_no_terreiro")
     private Boolean aplicouAlgumaPraticaSiteNoTerreiro;
+
+    // 1. O campo das práticas que o JS envia como Array de Strings (Checkboxes)
+    // Usamos List<String> e @ElementCollection para mapear a lista para outra tabela no BD (recomendado)
+    @ElementCollection
+    @CollectionTable(name = "praticas_aplicadas", joinColumns = @JoinColumn(name = "terreiro_id"))
+    @Column(name = "pratica")
+    private List<String> praticasAplicadas;
+
+    // 2. O campo de texto para a pergunta extra "Aplicará mais alguma?"
+    @Column(name = "aplicaraOutra", columnDefinition = "TEXT")
+    private String aplicaraOutra;
 
     // Para TIMESTAMP com DEFAULT CURRENT_TIMESTAMP no MySQL, LocalDateTime é uma boa escolha
     @Column(name = "data_cadastro")

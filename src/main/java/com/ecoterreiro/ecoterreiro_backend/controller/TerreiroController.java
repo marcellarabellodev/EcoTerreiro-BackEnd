@@ -14,7 +14,8 @@ import java.util.Optional;
 
 @RestController // Marca esta classe como um controlador REST
 @RequestMapping("/api/terreiros")  // Define o caminho base para os endpoints deste controlador
-@CrossOrigin(origins = "*") // Permite requisições de qualquer origem (útil para desenvolvimento, CUIDADO em produção)
+// @CrossOrigin(origins = "*") // Permite requisições de qualquer origem (útil para desenvolvimento, CUIDADO em produção), como não funcionou a comunicação com o Front, o navegador bloqueou (Erro CORS) irei colocar o endereço exato que o erro do console F12 me trouxe
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 
 public class TerreiroController {
 
